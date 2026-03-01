@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: GameObjectPool
+  m_EditorClassIdentifier: 
+  m_GroupName: GameObjectPool
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 6196bb93d761c6e4398dbc63d7b9e778
+  m_SerializeEntries:
+  - m_GUID: b4443c37c3a7320449140abb21aeff26
+    m_Address: MusicPlayObj
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 8392b290d254f7549b29a30ee9a1d3b8, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 801298b78b8dd4142b3a28632b509911, type: 2}
+    - {fileID: 11400000, guid: 7c976c9b37c87014f9bfb203afef857c, type: 2}
