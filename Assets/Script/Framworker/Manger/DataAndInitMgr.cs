@@ -158,7 +158,7 @@ public class DataAndInitMgr
     public static Dictionary<string,BaseCollection> ininDataDic = new Dictionary<string,BaseCollection>();
 
     /// <summary>
-    /// 存储二进制数据
+    /// 存储二进制数据，固定路径，文件名为类名
     /// </summary>
     /// <typeparam name="T">纯数据类</typeparam>
     /// <param name="obj">实例对象</param>

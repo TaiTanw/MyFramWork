@@ -8,7 +8,7 @@ using UnityEngine;
 /// <typeparam name="T"></typeparam>
 public class BaseAutoMonoMgr<T> : MonoBehaviour where T : MonoBehaviour
 {
-    //懒汉饿汉的继承mono的单例模式有较大区别。此后需对比
+
     private static T instance;
 
     public static T Instance
