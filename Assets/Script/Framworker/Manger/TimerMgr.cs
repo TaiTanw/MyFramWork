@@ -9,7 +9,7 @@ public class TimerMgr : BaseMgr<TimerMgr>
 {
     public class TimerItemData : I_InitDataToPool
     {
-
+        //DataFormatting 只能在真正回收时调用
         public void DataFormatting()
         {
             //数据格式化
@@ -20,13 +20,13 @@ public class TimerMgr : BaseMgr<TimerMgr>
             isOnDelet=false;
         }
         /// <summary>
-        /// 初始化方法
+        /// 初始化方法，单位：毫秒
         /// </summary>
         /// <param name="eCallBack"></param>
         /// <param name="eTime"></param>
         /// <param name="iCallBack"></param>
         /// <param name="iTime"></param>
-        public void InitTimer(UnityAction eCallBack,float eTime,UnityAction iCallBack=null,float iTime=1f)
+        public void InitTimer(UnityAction eCallBack,int eTime,UnityAction iCallBack=null,int iTime=1)
         {
             //数据初始化
             if (isNewInit)
@@ -81,19 +81,19 @@ public class TimerMgr : BaseMgr<TimerMgr>
         /// <summary>
         /// 计时器总时间
         /// </summary>
-        public float endTime;
+        public int endTime;
         /// <summary>
         /// 计时器间隔时间
         /// </summary>
-        public float intervalTime;
+        public int intervalTime;
         /// <summary>
         /// 当前时间，距离结束所剩时间
         /// </summary>
-        public float nowEndTime;
+        public int nowEndTime;
         /// <summary>
         /// 距离间隔触发所剩时间
         /// </summary>
-        public float nowIntervalTime;
+        public int nowIntervalTime;
         //此计时器是否开启
         public bool isRun;
         /// <summary>
@@ -113,7 +113,7 @@ public class TimerMgr : BaseMgr<TimerMgr>
             {
                 if(intervalCallBack != null)
                 {
-                    nowIntervalTime -= minTimeDelta;
+                    nowIntervalTime -= (int)(minTimeDelta*1000);
                     if(nowIntervalTime <= 0)
                     {
                         //间隔时间到，执行间隔回调
@@ -121,15 +121,15 @@ public class TimerMgr : BaseMgr<TimerMgr>
                         //重置间隔时间
                         nowIntervalTime = intervalTime;
                     }
-                    nowEndTime-=minTimeDelta;
-                    if(nowEndTime <= 0)
-                    {
-                        //计时结束，执行结束回调
-                        endCallBack?.Invoke();
+                }
+                nowEndTime -= (int)(minTimeDelta * 1000);
+                if (nowEndTime <= 0)
+                {
+                    //计时结束，执行结束回调
+                    endCallBack?.Invoke();
 
-                        //格式化，待删除(放入缓存池逻辑由管理器执行
-                        DataFormatting();
-                    }
+                    isOnDelet = true;   // 标记删除
+                    
                 }
 
             }
@@ -147,9 +147,14 @@ public class TimerMgr : BaseMgr<TimerMgr>
     /// 用于统一管理计时器的协程
     /// </summary>
     public Coroutine coroutine;
+    /// <summary>
+    /// 避免频繁创建的性能消耗
+    /// </summary>
+    private WaitForSeconds waitForSeconds;
     public TimerMgr()
     {
         Debug.Log("计时器管理器初始化");
+        waitForSeconds=new WaitForSeconds(minTimeDelta);
         coroutine = MonoPublicMgr.Instance.StartCoroutine(TimeisRuning());
     }
     IEnumerator TimeisRuning()
@@ -157,7 +162,7 @@ public class TimerMgr : BaseMgr<TimerMgr>
         while (true)
         {
             //控制计时器按照设定的最小时间运行，避免过大的性能开销
-            yield return new WaitForSeconds(minTimeDelta);
+            yield return waitForSeconds;
             //遍历计时器字典，执行计时和待删除放入
             foreach(var v in timerDic)
             {
@@ -201,7 +206,7 @@ public class TimerMgr : BaseMgr<TimerMgr>
     /// </summary>
     private List<TimerItemData> timerList = new List<TimerItemData>();
     /// <summary>
-    /// 创建计时器，默认创建即为启动
+    /// 创建计时器，默认创建即为启动，返回值为计时器ID,单位：毫秒
     /// 若声明创建时不启动，则通过返回值设置
     /// </summary>
     /// <param name="eCallBack">结束时回调</param>
@@ -210,7 +215,7 @@ public class TimerMgr : BaseMgr<TimerMgr>
     /// <param name="iTime">间隔时间</param>
     /// <param name="isrun">是否开启</param>
     /// <returns></returns>
-    public int StartTimerDataObj(UnityAction eCallBack, float eTime, UnityAction iCallBack = null, float iTime = 1f,bool isrun=true)
+    public int StartTimerDataObj(UnityAction eCallBack, int eTime, UnityAction iCallBack = null, int iTime = 1,bool isrun=true)
     {
         TimerItemData t = PoolMgr.Instance.GetPoolValue<TimerItemData>();
         t.InitTimer(eCallBack, eTime, iCallBack, iTime);

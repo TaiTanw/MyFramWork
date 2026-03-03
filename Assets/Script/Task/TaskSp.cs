@@ -109,26 +109,17 @@ public class TaskSp : MonoBehaviour
 
         if (GUILayout.Button("计时器测试"))
         {
+            int a = 0;
             a = TimerMgr.Instance.StartTimerDataObj(() =>
             {
                 print("计时器结束"+a);
-            }, 4f, () =>
+            }, 4500, () =>
             {
-                print($"{a}计时器间隔执行,剩余{System.Math.Round(TimerMgr.Instance.keyDic[a].nowEndTime, 0)}秒");
-            }, 1f);
+                print($"{a}计时器间隔执行,剩余{(float)(TimerMgr.Instance.keyDic[a].nowEndTime)/1000f}秒");
+            }, 500);
             print(a+"计时器执行");
-        }
-        if (GUILayout.Button("计时器测试2"))
-        {
-            TimerMgr.Instance.StartTimerDataObj(() =>
-            {
-                print("计时器结束2" );
-            }, 4f, () =>
-            {
-                //print($"计时器间隔执行,剩余{System.Math.Round(TimerMgr.Instance.keyDic[a].nowEndTime, 2)}秒");
-            }, 1f);
         }
 
     }
-    int a;
+
 }
