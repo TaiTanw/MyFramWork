@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FileTool 
 {
-    [MenuItem("×Ô¶¨Òå¹¤¾ß/¶¯Ì¬¼ÓÔØÂ·¾¶×Ô¼ì")]
+    [MenuItem("è‡ªå®šä¹‰å·¥å…·/åŠ¨æ€åŠ è½½è·¯å¾„è‡ªæ£€")]
     private static void DataFiledetection()
     {
         if (!Directory.Exists(Application.dataPath + "/Resources/" +DataAndInitMgr.Instance.resourcesNecessaryAssetsPath))
@@ -15,7 +15,7 @@ public class FileTool
         if (!Directory.Exists(Application.dataPath + "/Resources/" +DataAndInitMgr.Instance.defaultResourcesPath))
             Directory.CreateDirectory(Application.dataPath + "/Resources" + DataAndInitMgr.Instance.defaultResourcesPath);
 
-        //Ë¢ĞÂProject´°¿Ú
+        //åˆ·æ–°Projectçª—å£
         AssetDatabase.Refresh();
     }
 

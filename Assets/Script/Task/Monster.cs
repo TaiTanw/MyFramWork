@@ -1,4 +1,4 @@
-using System.Collections;
+锘縰sing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,9 +12,9 @@ public class Monster : MonoBehaviour
     }
     public void Dead()
     {
-        //触发事件
+        //瑙﹀彂浜嬩欢
         EventCenterSystem.Instance.EventTrigger<Monster>(E_EventEnum.Monster_Dead, this);
-        print("事件触发");
+        print("浜嬩欢瑙﹀彂");
     }
     // Update is called once per frame
     void Update()
