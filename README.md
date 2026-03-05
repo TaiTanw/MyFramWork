@@ -114,4 +114,5 @@ Base基类层
 3，玩家名称固定为player（唯一），需挂载playerinput组件，Behavior设置为invokeCSharpEvent
 
 ---
-
+##其他
+涉及资源加载的其他类，例如音乐管理类，因为使用Addressable异步加载涉及到异步嵌套，产生不稳定的问题，暂未解决，因此混合了部分Resources，用于暂时解决问题
