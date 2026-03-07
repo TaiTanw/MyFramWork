@@ -87,11 +87,11 @@ Base基类层
 一，资源动态加载注意事项和必备预设体导入
 
 此框架需涉及组件：Addressable ，InputSystem
-需要使用resources加载且会放入缓存池的对象，请放入Resources/default路径下，自定义工具内点击“动态加载路径自检”可自动创建相关文件夹，并在创建的NecessaryAssets文件下，放入框架必备的相关预设体，包括：MusicPlayObj/UICamera/Canvas/EventSystem
+需要使用resources加载且会放入缓存池的对象，请放入Resources/default路径下，自定义工具内点击“动态加载路径自检”可自动创建相关文件夹，并在创建的NecessaryAssets文件下，放入框架必备的相关预设体
+包括：MusicPlayObj/UICamera/Canvas/EventSystem
 
 二，UI相关
-	
-	
+		
 1，所有UI都通过代码控制
 （如果直接将UI相关组件放入场景作为默认显示，则在切换场景时候会导致重复组件出现）
 
@@ -115,6 +115,11 @@ Base基类层
 
 3，玩家名称固定为player（唯一），需挂载playerinput组件，Behavior设置为invokeCSharpEvent
 
+四，音乐相关
+
+1，游戏运行开始的默认背景音乐会在音乐管理器MusicMgr设置，具体情况根据修改变量值配置：private string BkDefaultMusicName = "BkMusic";
+值为Addressable加载的资源名
+
 ---
-##其他
-涉及资源加载的其他类，例如音乐管理类，因为使用Addressable异步加载涉及到异步嵌套，产生不稳定的问题，暂未解决，因此混合了部分Resources，用于暂时解决问题
+其他
+涉及资源加载的其他类，例如音乐管理类，因为使用Addressable异步加载涉及到异步嵌套，产生不稳定的问题，暂未解决，因此混合了部分Resources同步加载，用于暂时解决问题
