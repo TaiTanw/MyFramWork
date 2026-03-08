@@ -106,10 +106,11 @@ Base基类层
 
 1，若需要添加或移除输入事件：
 - （1）则先在DataAndInitMgr内修改按键输入枚举
-- （2）然后在改键面板逻辑内的ChangeBtnReally修改switch内的逻辑
-- （3）随后根据按键事件创建input action
-- （4）随后在文件内，将所有绑定的path部分，换成<>，尖括号内填入事件名称（一致性）
-- （5）随后导出为json文件，以player为固定名称，直接存入Resources，路径若需要修改，则对应修改DataAndInitMgr第133行
+- （2）修改DataAndInitMgr.InputInfo的成员变量
+- （3）然后在改键面板逻辑内的ChangeBtnReally修改switch内的逻辑
+- （4）随后根据按键事件创建input action，复制文件数据
+- （5）随后粘贴在动态资源player文件内，将所有绑定的path部分，换成<>，尖括号内填入事件名称（一致性）
+- （6）修改改键面板界面和脚本逻辑，面板更新逻辑（先从关联组件的成员变量修改）
 
 2，UI面板逻辑在start内关联名称固定为player的玩家对象，需注意命名规范
 
