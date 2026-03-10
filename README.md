@@ -87,11 +87,11 @@ Base基类层
 一，资源动态加载注意事项和必备预设体导入
 
 此框架需涉及组件：Addressable ，InputSystem
-需要使用resources加载且会放入缓存池的对象，请放入Resources/default路径下，自定义工具内点击“动态加载路径自检”可自动创建相关文件夹，并在创建的NecessaryAssets文件下，放入框架必备的相关预设体，包括：MusicPlayObj/UICamera/Canvas/EventSystem
+需要使用resources加载且会放入缓存池的对象，请放入Resources/default路径下，自定义工具内点击“动态加载路径自检”可自动创建相关文件夹，并在创建的NecessaryAssets文件下，放入框架必备的相关预设体
+包括：MusicPlayObj/UICamera/Canvas/EventSystem
 
 二，UI相关
-	
-	
+		
 1，所有UI都通过代码控制
 （如果直接将UI相关组件放入场景作为默认显示，则在切换场景时候会导致重复组件出现）
 
@@ -106,15 +106,21 @@ Base基类层
 
 1，若需要添加或移除输入事件：
 - （1）则先在DataAndInitMgr内修改按键输入枚举
-- （2）然后在改键面板逻辑内的ChangeBtnReally修改switch内的逻辑
-- （3）随后根据按键事件创建input action
-- （4）随后在文件内，将所有绑定的path部分，换成<>，尖括号内填入事件名称（一致性）
-- （5）随后导出为json文件，以player为固定名称，直接存入Resources，路径若需要修改，则对应修改DataAndInitMgr第133行
+- （2）修改DataAndInitMgr.InputInfo的成员变量
+- （3）然后在改键面板逻辑内的ChangeBtnReally修改switch内的逻辑
+- （4）随后根据按键事件创建input action，复制文件数据
+- （5）随后粘贴在动态资源player文件内，将所有绑定的path部分，换成<>，尖括号内填入事件名称（一致性）
+- （6）修改改键面板界面和脚本逻辑，面板更新逻辑（先从关联组件的成员变量修改）
 
 2，UI面板逻辑在start内关联名称固定为player的玩家对象，需注意命名规范
 
 3，玩家名称固定为player（唯一），需挂载playerinput组件，Behavior设置为invokeCSharpEvent
 
+四，音乐相关
+
+1，游戏运行开始的默认背景音乐会在音乐管理器MusicMgr设置，具体情况根据修改变量值配置：private string BkDefaultMusicName = "BkMusic";
+值为Addressable加载的资源名
+
 ---
-##其他
-涉及资源加载的其他类，例如音乐管理类，因为使用Addressable异步加载涉及到异步嵌套，产生不稳定的问题，暂未解决，因此混合了部分Resources，用于暂时解决问题
+其他
+涉及资源加载的其他类，例如音乐管理类，因为使用Addressable异步加载涉及到异步嵌套，产生不稳定的问题，暂未解决，因此混合了部分Resources同步加载，用于暂时解决问题
