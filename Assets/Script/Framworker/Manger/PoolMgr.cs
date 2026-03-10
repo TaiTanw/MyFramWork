@@ -1,5 +1,4 @@
-﻿using OpenCover.Framework.Model;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using UnityEditor;
@@ -46,7 +45,7 @@ public class PoolMgr : BaseMgr<PoolMgr>
         }
         public int Count => poolStack.Count;
         public int userCount => userList.Count;
-        //取出
+        ///取出
         public GameObject PopObj(string name)
         {
             GameObject obj;
@@ -66,12 +65,14 @@ public class PoolMgr : BaseMgr<PoolMgr>
                 //取出第0个对象，因为这是最早存入的内容
                 obj = userList[0];
                 //随后再次放入，刷新位置为末尾，因为需要返回，表示对象需要使用
+                userList.RemoveAt(0);
 
             }
             userList.Add(obj);
             obj.name = name;
             return obj;
         }
+
         //存入
         public void PushObj(GameObject obj)
         {
@@ -106,7 +107,7 @@ public class PoolMgr : BaseMgr<PoolMgr>
     }
 
     public abstract class BaseDataN { }
-    public class DataN<T>:BaseDataN where T : class,I_InitDataToPool, new() 
+    public class DataN<T> : BaseDataN where T : class, I_InitDataToPool, new()
     {
         public Queue<T> queue = new Queue<T>();
     }
@@ -116,18 +117,18 @@ public class PoolMgr : BaseMgr<PoolMgr>
     /// </summary>
     public PoolMgr()
     {
-        if(poolOpen)
+        if (poolOpen)
             root = new GameObject("Pool");
         //过场景不移除，因为管理类有同样性质?
         //问题在于，父对象过场景不移除，但是子对象同样受到影响，逻辑不符
         //GameObject.DontDestroyOnLoad(root);
     }
     //柜子容器(gameObj
-    public Dictionary<string,PoolData> valueDic = new Dictionary<string, PoolData>();
+    public Dictionary<string, PoolData> valueDic = new Dictionary<string, PoolData>();
 
     //容器（存入自定义数据类
-    public Dictionary<string,BaseDataN> nDataDic = new Dictionary<string, BaseDataN>();
-    
+    public Dictionary<string, BaseDataN> nDataDic = new Dictionary<string, BaseDataN>();
+
     /// <summary>
     /// 柜子根对象
     /// </summary>
@@ -135,7 +136,7 @@ public class PoolMgr : BaseMgr<PoolMgr>
 
     //需全局访问具体含义，表示是否开启布局优化
     //建议只在编辑器下开启
-    public static bool poolOpen=true;
+    public static bool poolOpen = true;
 
     #region 错误方式
     // <summary>
@@ -164,7 +165,7 @@ public class PoolMgr : BaseMgr<PoolMgr>
     /// <param name="assetName">对象名称</param>
     /// <param name="max">最大上限默认为10</param>
     /// <param name="path">资源来源</param>
-    public GameObject GetPoolValue(string assetName,int max=10,string path="")
+    public GameObject GetPoolValue(string assetName, int max = 10, string path = "")
     {
         //此处用Resources加载，之后可替换为综合加载管理器
         //此处用资源的完整路径作为键，减少同名可能性
@@ -195,10 +196,10 @@ public class PoolMgr : BaseMgr<PoolMgr>
         else
         {
             //确保柜子根对象存在
-            if (poolOpen&&root==null)
+            if (poolOpen && root == null)
                 root = new GameObject("Pool");
-            valueDic.Add(objName, new PoolData(objName+"pool",root,max));//因为只有此分支会new字典的值，所以可以理解为父对象存入的基本入口
-            
+            valueDic.Add(objName, new PoolData(objName + "pool", root, max));//因为只有此分支会new字典的值，所以可以理解为父对象存入的基本入口
+
             obj = GameObject.Instantiate(Resources.Load<GameObject>(objName));
             obj.name = objName;
             //存入正在使用对象列表
@@ -206,7 +207,7 @@ public class PoolMgr : BaseMgr<PoolMgr>
         }
 
         //出厂设置
-        valueDic[objName].SetPoolmgr(false,obj);
+        valueDic[objName].SetPoolmgr(false, obj);
         return obj;
     }
     /// <summary>
@@ -217,7 +218,7 @@ public class PoolMgr : BaseMgr<PoolMgr>
     /// <param name="max">最大限制</param>
     public void GetPoolValue(string objName, UnityAction<GameObject> callBack, int max = 10)
     {
-        
+
         GameObject obj;
         if (valueDic.ContainsKey(objName))
         {
@@ -235,7 +236,6 @@ public class PoolMgr : BaseMgr<PoolMgr>
                     callBack(obj);
 
                     //因为创建逻辑统一由管理器管理，所以创建时的初始化也需要注意
-                    valueDic[objName].userList.Add(obj);
                     obj.name = objName;
 
                 });
@@ -246,13 +246,13 @@ public class PoolMgr : BaseMgr<PoolMgr>
         else
         {
             //确保柜子根对象存在
-            if (poolOpen&&root==null)
+            if (poolOpen && root == null)
                 root = new GameObject("Pool");
             valueDic.Add(objName, new PoolData(objName + "pool", root, max));//因为只有此分支会new字典的值，所以可以理解为父对象存入的基本入口
-            
+
             AddresableMge.Instance.LoadAssetAsyncI<GameObject>(objName, (hande) =>
             {
-                obj=GameObject.Instantiate(hande.Result);
+                obj = GameObject.Instantiate(hande.Result);
                 obj.name = objName;
                 //存入正在使用对象列表
                 valueDic[objName].userList.Add(obj);
@@ -270,33 +270,36 @@ public class PoolMgr : BaseMgr<PoolMgr>
     /// <typeparam name="T">类型需继承接口</typeparam>
     /// <param name="nameSpace">命名空间</param>
     /// <returns></returns>
-    public T GetPoolValue<T>(string nameSpace="") where T : class, I_InitDataToPool,new()
+    public T GetPoolValue<T>(string nameSpace = "") where T : class, I_InitDataToPool, new()
     {
-        string nameID=nameSpace+"_"+typeof(T).Name;
+        string nameID = nameSpace + "_" + typeof(T).Name;
         T tObj;
-        if (nDataDic.ContainsKey(nameID))
+        if (nDataDic.ContainsKey(nameID) && (nDataDic[nameID] as DataN<T>).queue.Count > 0)
         {
             tObj = (nDataDic[nameID] as DataN<T>).queue.Dequeue();
         }
         else
         {
-            tObj=new T();
+            tObj = new T();
         }
         return tObj;
     }
 
 
-    //放东西
+    /// <summary>
+    /// 放东西(GameObj)
+    /// </summary>
+    /// <param name="obj"></param>
     public void PushInObj(GameObject obj)
     {
         if (valueDic.ContainsKey(obj.name))
         {
             //入厂设置
-            valueDic[obj.name].SetPoolmgr(true,obj);
+            valueDic[obj.name].SetPoolmgr(true, obj);
             valueDic[obj.name].PushObj(obj);
         }
     }
-    public void PushInObj<T>(T obj,string nameSpace="") where T :class, I_InitDataToPool,new()
+    public void PushInObj<T>(T obj, string nameSpace = "") where T : class, I_InitDataToPool, new()
     {
         //如果想要压入null对象 是不被允许的
         if (obj == null)
@@ -304,8 +307,8 @@ public class PoolMgr : BaseMgr<PoolMgr>
             Debug.LogError("不允许往缓存池存入null数据");
             return;
         }
-            
-        string nameID=nameSpace+"_"+typeof(T).Name;
+
+        string nameID = nameSpace + "_" + typeof(T).Name;
         //格式化数据，便于取时直接使用
         obj.DataFormatting();
         if (!nDataDic.ContainsKey(nameID))
@@ -324,6 +327,21 @@ public class PoolMgr : BaseMgr<PoolMgr>
         nDataDic.Clear();
         //清空引用，要使用再创建
         root = null;
+    }
+
+    /// <summary>
+    /// 缓存池预热
+    /// </summary>
+    /// <param name="assetName">资源名称</param>
+    /// <param name="count">缓存池上限</param>
+    /// <param name="path">资源路径</param>
+    public void Preload(string assetName, int count, string path = "")
+    {
+        for (int i = 0; i < count; i++)
+        {
+            GameObject obj = GetPoolValue(assetName, count, path);
+            PushInObj(obj);
+        }
     }
 
 
