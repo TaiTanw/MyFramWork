@@ -185,9 +185,6 @@ public class PoolMgr : BaseMgr<PoolMgr>
             obj = valueDic[objName].PopObj(objName);
             if (obj == null)
             {
-
-
-
                 obj = GameObject.Instantiate(Resources.Load<GameObject>(objName));//实例化再返回
                 valueDic[objName].userList.Add(obj);
                 obj.name = objName;
@@ -274,8 +271,13 @@ public class PoolMgr : BaseMgr<PoolMgr>
     {
         string nameID = nameSpace + "_" + typeof(T).Name;
         T tObj;
-        if (nDataDic.ContainsKey(nameID) && (nDataDic[nameID] as DataN<T>).queue.Count > 0)
+        if (nDataDic.ContainsKey(nameID))
         {
+            if ((nDataDic[nameID] as DataN<T>).queue.Count <= 0)
+            {
+                Debug.LogWarning("队列为空，请排查问题!!!");
+                return null;
+            }
             tObj = (nDataDic[nameID] as DataN<T>).queue.Dequeue();
         }
         else
@@ -339,9 +341,22 @@ public class PoolMgr : BaseMgr<PoolMgr>
     {
         for (int i = 0; i < count; i++)
         {
-            GameObject obj = GetPoolValue(assetName, count, path);
-            PushInObj(obj);
+            GetPoolValue(assetName, count, path);
         }
+        string keyname;
+        if (path == "")
+        {
+            keyname = DataAndInitMgr.Instance.defaultResourcesPath + assetName;
+        }
+        else
+        {
+            keyname = path + assetName;
+        }
+        for (int i = valueDic[keyname].userList.Count - 1; i >= 0; i--)//此处务必倒叙遍历移除，否则报错！！！
+        {
+            PushInObj(valueDic[keyname].userList[i]);
+        }
+
     }
 
 
