@@ -168,8 +168,9 @@ public class ExcelTool
                                 fs.Write(BitConverter.GetBytes(float.Parse(row[i].ToString())), 0, 4);
                                 break;
                             case "string":
-                                fs.Write(BitConverter.GetBytes(row[i].ToString().Length), 0, 4);
-                                fs.Write(Encoding.UTF8.GetBytes(row[i].ToString()), 0, row[i].ToString().Length);
+                                byte[] bytes = Encoding.UTF8.GetBytes(row[i].ToString());
+                                fs.Write(BitConverter.GetBytes(bytes.Length), 0, 4);
+                                fs.Write(bytes, 0, bytes.Length);
                                 break;
                             case "bool":
                                 fs.Write(BitConverter.GetBytes(bool.Parse(row[i].ToString())), 0, 1);
