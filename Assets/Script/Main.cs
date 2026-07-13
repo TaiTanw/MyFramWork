@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {
+
+    public static Main Instance;
     void Start()
     {
         //读表工具测试代码
@@ -12,6 +14,16 @@ public class Main : MonoBehaviour
     }
     private void Awake()
     {
+
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
         DataAndInitMgr.Instance.Init();
         UIMgr.Instance.Init();
         UIMgr.Instance.ShowOneUI<BeginPanel>();
